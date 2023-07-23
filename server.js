@@ -16,7 +16,7 @@ const http = require('http').createServer(app)
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Health check!');
 });
 
 const { connectSockets } = require('./services/socket.service');
