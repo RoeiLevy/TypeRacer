@@ -10,7 +10,7 @@ const port = process.env.PORT || 8080;
 connectSockets(http);
 
 const corsOptions = {
-    origins: ['http://127.0.0.1:4200', 'http://localhost:4200'],
+    origins: ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://type-racer-sandy.vercel.app/'],
     credentials: true
 }
 
