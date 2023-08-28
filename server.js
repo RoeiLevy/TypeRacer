@@ -1,29 +1,34 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const { connectSockets } = require('./services/socket.service');
+const { getScoresByUserId } = require('./services/scores.service');
 
-// if (process.env.NODE_ENV === 'production') {
-//     app.use(express.static('public'))
-// } else {
+const path = require('path');
+const app = express();
+const http = require('http').createServer(app)
+const port = process.env.PORT || 8080;
+connectSockets(http);
+
 const corsOptions = {
     origins: ['http://127.0.0.1:4200', 'http://localhost:4200'],
     credentials: true
 }
+
 app.use(cors(corsOptions))
-// }
-
-const http = require('http').createServer(app)
-
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 app.get('/', (req, res) => {
     res.send('Health check!');
 });
 
-const { connectSockets } = require('./services/socket.service');
-connectSockets(http);
-
-const port = process.env.PORT || 3000;
+app.get('/scores', async (req, res) => {
+    const scores = await getScoresByUserId(req.query.userId)
+    res.json(scores)
+})
 
 http.listen(port, () => {
-    console.log('listening on http://localhost:3000');
+    console.log('listening on http://localhost:8080');
 });
