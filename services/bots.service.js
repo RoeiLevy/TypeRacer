@@ -1,4 +1,5 @@
 const { saveRoomToDbAndDelete } = require("./room.service");
+const fetch = require('node-fetch'); 
 
 function _formatTime(milliseconds) {
     const minutes = Math.floor(milliseconds / (60 * 1000));
