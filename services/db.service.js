@@ -9,7 +9,6 @@ async function connect() {
     if (dbConn) return dbConn;
     try {
         const client = new MongoClient(config.dbURL);
-		console.log("TCL: connect -> config.dbURL", config.dbURL)
         const c = await client.connect()
         const db = c.db(dbName);
         dbConn = db;
