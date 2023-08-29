@@ -8,7 +8,7 @@ const port = process.env.PORT || 8080;
 connectSockets(http);
 
 const corsOptions = {
-    origin: ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://type-racer-game.netlify.app/'],
+    origins: ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://type-racer-game.netlify.app'],
     credentials: true
 }
 app.use(cors(corsOptions))
