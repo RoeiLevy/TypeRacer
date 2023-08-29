@@ -1,3 +1,4 @@
+const { addBots } = require('./bots.service');
 const { getRoom, updatePlayer, saveRoomToDbAndDelete } = require('./room.service');
 
 function connectSockets(http) {
@@ -7,15 +8,11 @@ function connectSockets(http) {
         }
     });
 
-    function emitToAll({ type, data, roomId = null }) {
-        if (roomId) gIo.to(roomId).emit(type, data)
-        else gIo.emit(type, data)
-    }
-
     gIo.on('connection', socket => {
 
         socket.on('play', async (player) => {
             const room = await getRoom()
+            addBots(gIo, room)
             if (room.players.find(p => p.id === player.id)) {
                 gIo.to(room.id).emit('update-room', room)
                 return
@@ -30,7 +27,7 @@ function connectSockets(http) {
             const room = updatePlayer(player, roomId)
             gIo.to(roomId).emit('update-room', room)
             if (room.results.length === room.players.length) {
-                emitToAll({ type: 'end-game', data: null, roomId })
+                gIo.to(roomId).emit('end-game', null)
                 await saveRoomToDbAndDelete(roomId, Math.round((Date.now() - room.startTimestamp) / 1000))
             }
         })
@@ -45,31 +42,8 @@ function connectSockets(http) {
 }
 
 
-// const emitToAll = ({ type, data, roomId = null }) => {
-//     if (roomId) gIo.to(roomId).emit(type, data)
-//     else gIo.emit(type, data)
-// }
-
-// // TODO: Need to test emitToUser feature
-// function emitToUser({ type, data, userId }) {
-//     gIo.to(userId).emit(type, data)
-// }
-
-
-// // Send to all sockets BUT not the current socket 
-// function broadcast({ type, data, room = null }) {
-//     const store = asyncLocalStorage.getStore()
-//     const { sessionId } = store
-//     if (!sessionId) return logger.debug('Shoudnt happen, no sessionId in asyncLocalStorage store')
-//     if (!excludedSocket) return logger.debug('Shouldnt happen, No socket in map')
-//     if (room) excludedSocket.broadcast.to(room).emit(type, data)
-//     else excludedSocket.broadcast.emit(type, data)
-// }
-
-
 module.exports = {
     connectSockets,
-    // broadcast,
 }
 
 

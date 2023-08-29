@@ -22,7 +22,7 @@ async function _addNewRoom() {
         id: Math.random().toString(36).substring(2),
         players: [],
         quote,
-        startTimestamp: Date.now() + 5000,
+        startTimestamp: Date.now() + 10000,
         results: []
     }
     gRooms.push(room)
@@ -77,6 +77,7 @@ function updatePlayer(player, roomId) {
 
 async function saveRoomToDbAndDelete(roomId, timeElapsed) {
     const room = _getRoomById(roomId)
+    if(!room) return
     room.timeElapsed = timeElapsed
     const rooms_logs = await dbService.getCollection('rooms_logs')
     await rooms_logs.insertOne(room);
@@ -90,28 +91,9 @@ async function saveRoomToDbAndDelete(roomId, timeElapsed) {
     return room;
 }
 
-// function addBots(gIo, room) {
-//     const addBotIntervalId = setInterval(async () => {
-//         if (room.players.length === 5) {
-//             clearInterval(addBotIntervalId)
-//             return
-//         }
-//         const res = await fetch('https://randomuser.me/api/')
-//         const { results } = await res.json();
-//         const bot = {
-//             id: Math.random().toString(36).substring(2),
-//             username: results[0].name.first + ' ' + results[0].name.last,
-//             progress: 0,
-//             isBot: true
-//         }
-//         room.players.push(bot)
-//         // if (room.players.length === 2) room.startTimestamp = Date.now() + 6000
-//         gIo.to(room.id).emit('add-player', room)
-//     }, 1000)
-// }
 
 module.exports = {
     getRoom,
     updatePlayer,
-    saveRoomToDbAndDelete
+    saveRoomToDbAndDelete,
 }
