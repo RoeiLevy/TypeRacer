@@ -8,11 +8,15 @@ function _getRandomQuote() {
 }
 
 async function _addNewRoom() {
-    // const quote = await _getRandomQuote()
-    const quote = {
-        "text": "Music.",
-        "author": "Karl Lagerfeld",
-        "tag": "music"
+    let quote
+    if (process.env.NODE_ENV === 'production') {
+        quote = await _getRandomQuote()
+    } else {
+        quote = {
+            "text": "Music.",
+            "author": "Karl Lagerfeld",
+            "tag": "music"
+        }
     }
     const room = {
         id: Math.random().toString(36).substring(2),
