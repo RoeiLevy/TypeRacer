@@ -83,7 +83,7 @@ async function saveRoomToDbAndDelete(roomId, timeElapsed) {
     await rooms_logs.insertOne(room);
     const scores = await dbService.getCollection('scores')
     room.players.forEach(async (p) => {
-        if (!p.username.startsWith('Guest')) {
+        if (!p.username.startsWith('Guest') && !p.isBot) {
             await scores.insertOne(p);
         }
     })
