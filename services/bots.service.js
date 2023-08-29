@@ -1,5 +1,5 @@
 const { saveRoomToDbAndDelete } = require("./room.service");
-const fetch = require('node-fetch'); 
+const axios = require('axios');
 
 function _formatTime(milliseconds) {
     const minutes = Math.floor(milliseconds / (60 * 1000));
@@ -20,8 +20,8 @@ function _setBotWin(room, bot) {
 }
 
 async function _getBot() {
-    const res = await fetch('https://randomuser.me/api/')
-    const { results } = await res.json();
+    const res = await axios.get('https://randomuser.me/api/')
+    const { results } = res.data
     return {
         id: Math.random().toString(36).substring(2),
         username: results[0].name.first + ' ' + results[0].name.last,
