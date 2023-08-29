@@ -77,7 +77,7 @@ function updatePlayer(player, roomId) {
 
 async function saveRoomToDbAndDelete(roomId, timeElapsed) {
     const room = _getRoomById(roomId)
-    if(!room) return
+    if (!room) return
     room.timeElapsed = timeElapsed
     const rooms_logs = await dbService.getCollection('rooms_logs')
     await rooms_logs.insertOne(room);
@@ -91,9 +91,21 @@ async function saveRoomToDbAndDelete(roomId, timeElapsed) {
     return room;
 }
 
+function getPlayerRoom(player) {
+    for (let i = 0; i < gRooms.length; i++) {
+        const currRoom = gRooms[i];
+        for (let i = 0; i < currRoom.players.length; i++) {
+            const currPlayer = currRoom.players[i];
+            if (currPlayer.id === player.id) return currRoom
+        }
+    }
+    return false
+}
+
 
 module.exports = {
     getRoom,
     updatePlayer,
     saveRoomToDbAndDelete,
+    getPlayerRoom
 }
