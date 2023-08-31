@@ -32,15 +32,16 @@ function _getRoomById(roomId) {
     return gRooms.find(room => room.id === roomId)
 }
 
-function _removePlayer(socket) {
-    const room = gRooms.find(room => room.players.find(player => player.socketId === socket.id))
+function removePlayer(player, roomId) {
+    const room = _getRoomById(roomId)
     if (room) {
-        const playerIndex = room.players.findIndex(player => player.socketId === socket.id)
+        const playerIndex = room.players.findIndex(p => p.id === player.id)
         if (playerIndex !== -1) {
             room.players.splice(playerIndex, 1)
-            gIo.to(room.id).emit('remove-player', room)
+            return { room, isPlayerRemoved: true }
         }
     }
+    return { room, isPlayerRemoved: false }
 }
 
 function _removeRoomById(roomId) {
@@ -107,5 +108,6 @@ module.exports = {
     getRoom,
     updatePlayer,
     saveRoomToDbAndDelete,
-    getPlayerRoom
+    getPlayerRoom,
+    removePlayer
 }
