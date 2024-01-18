@@ -15,6 +15,10 @@ app.use(cors(corsOptions))
 
 const api = require('./api/api.js')
 app.use('/api/', api)
+app.get('/keep-warm', (req, res) => {
+    console.log("server warmed at:" + new Date().toLocaleString());
+    return res.status(200).end()
+})
 
 http.listen(port, () => {
     console.log('listening on http://localhost:8080');
